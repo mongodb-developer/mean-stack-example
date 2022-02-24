@@ -1,0 +1,25 @@
+{
+  "name": "mean-stack-example",
+  "version": "1.0.0",
+  "description": "Sample CRUD application built with the MEAN stack.",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm run prepare && concurrently \"npm run start:server\" \"npm run start:client\"",
+    "start:server": "cd server && npm start",
+    "start:client": "cd client && npm start",
+    "prepare": "concurrently \"npm run prepare:server\" \"npm run prepare:client\"",
+    "prepare:server": "cd server && npm install",
+    "prepare:client": "cd client && npm install",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Stanimira Vlaeva",
+  "license": "Apache 2.0",
+  "homepage": "https://github.com/mongodb-developer/mean-stack-example#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mongodb-developer/mean-stack-example.git"
+  },
+  "devDependencies": {
+    "concurrently": "^7.0.0"
+  }
+}
