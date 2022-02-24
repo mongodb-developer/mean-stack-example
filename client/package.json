@@ -1,6 +1,8 @@
 {
   "name": "client",
   "version": "0.0.0",
+  "author": "Stanimira Vlaeva",
+  "license": "Apache 2.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
