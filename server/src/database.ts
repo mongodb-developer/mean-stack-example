@@ -9,14 +9,14 @@ export async function connectToDatabase(uri: string) {
     const client = new mongodb.MongoClient(uri);
     await client.connect();
 
-    const db = client.db("myFirstDatabase");
+    const db = client.db("meanStackExample");
     await applySchemaValidation(db);
 
     const employeesCollection = db.collection<Employee>("employees");
     collections.employees = employeesCollection;
 }
 
-// Update our existing collection with JSON schema validation so we know our documents will always match the shape of our Game model, even if added elsewhere.
+// Update our existing collection with JSON schema validation so we know our documents will always match the shape of our Employee model, even if added elsewhere.
 // For more information about schema validation, see this blog series: https://www.mongodb.com/blog/post/json-schema-validation--locking-down-your-model-the-smart-way
 async function applySchemaValidation(db: mongodb.Db) {
     const jsonSchema = {
@@ -49,8 +49,8 @@ async function applySchemaValidation(db: mongodb.Db) {
         collMod: "employees",
         validator: jsonSchema
     }).catch(async (error: mongodb.MongoServerError) => {
-        if (error.codeName === 'NamespaceNotFound') {
-            await db.createCollection(process.env.GAMES_COLLECTION_NAME, {validator: jsonSchema});
+        if (error.codeName === "NamespaceNotFound") {
+            await db.createCollection("employees", {validator: jsonSchema});
         }
     });
 }
