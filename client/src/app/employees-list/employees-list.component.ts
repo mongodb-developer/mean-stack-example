@@ -40,10 +40,16 @@ export class EmployeesListComponent implements OnInit {
   constructor(private employeesService: EmployeeService) { }
 
   ngOnInit(): void {
-    this.employees$ = this.employeesService.getEmployees();
+    this.fetchEmployees();
   }
 
-  deleteEmployee(id: string) {
-    this.employeesService.deleteEmployee(id).subscribe();
+  deleteEmployee(id: string): void {
+    this.employeesService.deleteEmployee(id).subscribe({
+      next: () => this.fetchEmployees()
+    });
+  }
+
+  private fetchEmployees(): void {
+    this.employees$ = this.employeesService.getEmployees();
   }
 }
