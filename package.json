@@ -10,6 +10,9 @@
     "prepare": "concurrently \"npm run prepare:server\" \"npm run prepare:client\"",
     "prepare:server": "cd server && npm install",
     "prepare:client": "cd client && npm install",
+    "build": "npm run prepare && concurrently \"npm run build:server\" \"npm run build:client\"",
+    "build:server": "cd server && npm run build",
+    "build:client": "cd client && npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Stanimira Vlaeva",
@@ -20,6 +23,6 @@
     "url": "https://github.com/mongodb-developer/mean-stack-example.git"
   },
   "devDependencies": {
-    "concurrently": "^7.0.0"
+    "concurrently": "^7.1.0"
   }
 }
