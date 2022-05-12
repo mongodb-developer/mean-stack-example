@@ -19,6 +19,31 @@ npm start
 
 When both applications are built and running, open your browser on http://localhost:4200/.
 
+
+## Contributors ✨
+
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center">
+        <a href="https://github.com/AbiramiSukumaran">
+            <img src="https://avatars.githubusercontent.com/u/13735898?v=4" width="100px;" alt=""/><br />
+            <sub><b>Abirami Sukumaran</b></sub>
+        </a><br />
+    </td>
+    <td align="center">
+        <a href="https://twitter.com/StanimiraVlaeva">
+            <img src="https://avatars.githubusercontent.com/u/7893485?v=4" width="100px;" alt=""/><br />
+            <sub><b>Stanimira Vlaeva</b></sub>
+        </a><br />
+    </td>
+  </tr>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
 ## Disclaimer
 
 Use at your own risk; not a supported MongoDB product
