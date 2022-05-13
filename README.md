@@ -27,7 +27,7 @@ When both applications are built and running, open your browser on http://localh
 <table>
   <tr>
     <td align="center">
-        <a href="www.linkedin.com/in/abiramisukumaran">
+        <a href="https://github.com/AbiramiSukumaran">
             <img src="https://avatars.githubusercontent.com/u/13735898?v=4" width="100px;" alt=""/><br />
             <sub><b>Abirami Sukumaran</b></sub>
         </a><br />
