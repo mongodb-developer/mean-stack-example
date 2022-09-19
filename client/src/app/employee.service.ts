@@ -7,7 +7,7 @@ import { Employee } from './employee';
   providedIn: 'root'
 })
 export class EmployeeService {
-  private url = 'http://localhost:5200';
+  private url = `${location.origin}`;
   private employees$: Subject<Employee[]> = new Subject();
 
   constructor(private httpClient: HttpClient) { }
