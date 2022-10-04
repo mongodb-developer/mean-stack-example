@@ -13,7 +13,9 @@
     "build": "npm run prepare && concurrently \"npm run build:server\" \"npm run build:client\"",
     "build:server": "cd server && npm run build",
     "build:client": "cd client && npm run build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npm run prepare && concurrently \"npm run test:client\" \"npm run test:server\"",
+    "test:client": "cd client && npm test",
+    "test:server": "cd server && npm test"
   },
   "contributors": [
     {
