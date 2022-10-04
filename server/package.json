@@ -5,7 +5,7 @@
   "scripts": {
     "start": "ts-node src/server.ts",
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "eslint ."
   },
   "author": "Stanimira Vlaeva",
   "license": "Apache 2.0",
