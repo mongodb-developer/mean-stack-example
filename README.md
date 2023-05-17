@@ -44,6 +44,12 @@ When both applications are built and running, open your browser on http://localh
             <sub><b>Abdullah Osama</b></sub>
         </a><br />
     </td>
+    <td align="center">
+        <a href="https://bleything.net/">
+            <img src="https://avatars.githubusercontent.com/u/270?v=4" width="100px;" alt=""/><br />
+            <sub><b>Ben Bleything</b></sub>
+        </a><br />
+    </td>
   </tr>
 </table>
 
