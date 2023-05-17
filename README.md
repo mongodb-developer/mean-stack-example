@@ -38,6 +38,12 @@ When both applications are built and running, open your browser on http://localh
             <sub><b>Stanimira Vlaeva</b></sub>
         </a><br />
     </td>
+    <td align="center">
+        <a href="https://www.linkedin.com/in/abdulahosama">
+            <img src="https://avatars.githubusercontent.com/u/51336081?v=4" width="100px;" alt=""/><br />
+            <sub><b>Abdullah Osama</b></sub>
+        </a><br />
+    </td>
   </tr>
 </table>
 
