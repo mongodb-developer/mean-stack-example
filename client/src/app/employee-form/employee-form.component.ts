@@ -16,6 +16,20 @@ import { Employee } from '../employee';
     MatRadioModule,
     MatButtonModule,
   ],
+  styles: `
+    .employee-form {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 2rem;
+    }
+    .mat-mdc-radio-button ~ .mat-mdc-radio-button {
+      margin-left: 16px;
+    }
+    .mat-mdc-form-field {
+      width: 100%;
+    }
+  `,
   template: `
     <form
       class="employee-form"
@@ -65,17 +79,6 @@ import { Employee } from '../employee';
         Add
       </button>
     </form>
-  `,
-  styles: `
-    .employee-form {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      padding: 2rem;
-    }
-    .mat-mdc-radio-button ~ .mat-mdc-radio-button {
-      margin-left: 16px;
-    }
   `,
 })
 export class EmployeeFormComponent {
