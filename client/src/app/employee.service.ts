@@ -1,6 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subject, tap } from 'rxjs';
 import { Employee } from './employee';
 
 @Injectable({
@@ -8,35 +7,39 @@ import { Employee } from './employee';
 })
 export class EmployeeService {
   private url = 'http://localhost:5200';
-  private employees$: Subject<Employee[]> = new Subject();
-
+  employees$ = signal<Employee[]>([]);
+  employee$ = signal<Employee>({} as Employee);
+  
   constructor(private httpClient: HttpClient) { }
 
   private refreshEmployees() {
     this.httpClient.get<Employee[]>(`${this.url}/employees`)
       .subscribe(employees => {
-        this.employees$.next(employees);
+        this.employees$.set(employees);
       });
   }
 
-  getEmployees(): Subject<Employee[]> {
+  getEmployees() {
     this.refreshEmployees();
-    return this.employees$;
+    return this.employees$();
   }
 
-  getEmployee(id: string): Observable<Employee> {
-    return this.httpClient.get<Employee>(`${this.url}/employees/${id}`);
+  getEmployee(id: string) {
+    this.httpClient.get<Employee>(`${this.url}/employees/${id}`).subscribe(employee => {
+      this.employee$.set(employee);
+      return this.employee$();
+    });
   }
 
-  createEmployee(employee: Employee): Observable<string> {
+  createEmployee(employee: Employee) {
     return this.httpClient.post(`${this.url}/employees`, employee, { responseType: 'text' });
   }
 
-  updateEmployee(id: string, employee: Employee): Observable<string> {
+  updateEmployee(id: string, employee: Employee) {
     return this.httpClient.put(`${this.url}/employees/${id}`, employee, { responseType: 'text' });
   }
 
-  deleteEmployee(id: string): Observable<string> {
+  deleteEmployee(id: string) {
     return this.httpClient.delete(`${this.url}/employees/${id}`, { responseType: 'text' });
   }
 }

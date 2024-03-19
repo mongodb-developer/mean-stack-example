@@ -1,6 +1,6 @@
 {
   "name": "mean-stack-example",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Sample CRUD application built with the MEAN stack.",
   "main": "index.js",
   "scripts": {
@@ -25,6 +25,10 @@
     {
       "name": "Stanimira Vlaeva",
       "url": "https://github.com/sis0k0"
+    },
+    {
+      "name": "Jesse Hall - @codeSTACKr",
+      "url": "https://github.com/codeSTACKr"
     }
   ],
   "license": "Apache 2.0",

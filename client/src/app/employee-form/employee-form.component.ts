@@ -1,71 +1,88 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { BehaviorSubject } from 'rxjs';
+import { Component, effect, EventEmitter, input, Output } from '@angular/core';
+import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatButtonModule } from '@angular/material/button';
 import { Employee } from '../employee';
 
 @Component({
   selector: 'app-employee-form',
+  standalone: true,
+  imports: [
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatRadioModule,
+    MatButtonModule,
+  ],
+  styles: `
+    .employee-form {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 2rem;
+    }
+    .mat-mdc-radio-button ~ .mat-mdc-radio-button {
+      margin-left: 16px;
+    }
+    .mat-mdc-form-field {
+      width: 100%;
+    }
+  `,
   template: `
-    <form class="employee-form" autocomplete="off" [formGroup]="employeeForm" (ngSubmit)="submitForm()">
-      <div class="form-floating mb-3">
-        <input class="form-control" type="text" id="name" formControlName="name" placeholder="Name" required>
-        <label for="name">Name</label>
-      </div>
+    <form
+      class="employee-form"
+      autocomplete="off"
+      [formGroup]="employeeForm"
+      (submit)="submitForm()"
+    >
+      <mat-form-field>
+        <mat-label>Name</mat-label>
+        <input matInput placeholder="Name" formControlName="name" required />
+        @if (name.invalid) {
+        <mat-error>Name must be at least 3 characters long.</mat-error>
+        }
+      </mat-form-field>
 
-      <div *ngIf="name.invalid && (name.dirty || name.touched)" class="alert alert-danger">
-        <div *ngIf="name.errors?.['required']">
-          Name is required.
-        </div>
-        <div *ngIf="name.errors?.['minlength']">
-          Name must be at least 3 characters long.
-        </div>
-      </div>
+      <mat-form-field>
+        <mat-label>Position</mat-label>
+        <input
+          matInput
+          placeholder="Position"
+          formControlName="position"
+          required
+        />
+        @if (position.invalid) {
+        <mat-error>Position must be at least 5 characters long.</mat-error>
+        }
+      </mat-form-field>
 
-      <div class="form-floating mb-3">
-        <input class="form-control" type="text" formControlName="position" placeholder="Position" required>
-        <label for="position">Position</label>
-      </div>
-
-      <div *ngIf="position.invalid && (position.dirty || position.touched)" class="alert alert-danger">
-
-        <div *ngIf="position.errors?.['required']">
-          Position is required.
-        </div>
-        <div *ngIf="position.errors?.['minlength']">
-          Position must be at least 5 characters long.
-        </div>
-      </div>
-
-      <div class="mb-3">
-        <div class="form-check">
-          <input class="form-check-input" type="radio" formControlName="level" name="level" id="level-junior" value="junior" required>
-          <label class="form-check-label" for="level-junior">Junior</label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="radio" formControlName="level" name="level" id="level-mid" value="mid">
-          <label class="form-check-label" for="level-mid">Mid</label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="radio" formControlName="level" name="level" id="level-senior"
-            value="senior">
-          <label class="form-check-label" for="level-senior">Senior</label>
-        </div>
-      </div>
-
-      <button class="btn btn-primary" type="submit" [disabled]="employeeForm.invalid">Add</button>
+      <mat-radio-group formControlName="level" aria-label="Select an option">
+        <mat-radio-button name="level" value="junior" required 
+          >Junior</mat-radio-button
+        >
+        <mat-radio-button name="level" value="mid"
+          >Mid</mat-radio-button
+        >
+        <mat-radio-button name="level" value="senior"
+          >Senior</mat-radio-button
+        >
+      </mat-radio-group>
+      <br />
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="employeeForm.invalid"
+      >
+        Add
+      </button>
     </form>
   `,
-  styles: [
-    `.employee-form {
-      max-width: 560px;
-      margin-left: auto;
-      margin-right: auto;
-    }`
-  ]
 })
-export class EmployeeFormComponent implements OnInit {
-  @Input()
-  initialState: BehaviorSubject<Employee> = new BehaviorSubject({});
+export class EmployeeFormComponent {
+  initialState = input<Employee>();
 
   @Output()
   formValuesChanged = new EventEmitter<Employee>();
@@ -73,27 +90,33 @@ export class EmployeeFormComponent implements OnInit {
   @Output()
   formSubmitted = new EventEmitter<Employee>();
 
-  employeeForm: FormGroup = new FormGroup({});
+  employeeForm = this.formBuilder.group({
+    name: ['', [Validators.required, Validators.minLength(3)]],
+    position: ['', [Validators.required, Validators.minLength(5)]],
+    level: ['junior', [Validators.required]],
+  });
 
-  constructor(private fb: FormBuilder) { }
-
-  get name() { return this.employeeForm.get('name')!; }
-  get position() { return this.employeeForm.get('position')!; }
-  get level() { return this.employeeForm.get('level')!; }
-
-  ngOnInit() {
-    this.initialState.subscribe(employee => {
-      this.employeeForm = this.fb.group({
-        name: [ employee.name, [Validators.required, Validators.minLength(3) ] ],
-        position: [ employee.position, [ Validators.required, Validators.minLength(5) ] ],
-        level: [ employee.level, [Validators.required] ]
+  constructor(private formBuilder: FormBuilder) {
+    effect(() => {
+      this.employeeForm.setValue({
+        name: this.initialState()?.name || '',
+        position: this.initialState()?.position || '',
+        level: this.initialState()?.level || 'junior',
       });
     });
+  }
 
-    this.employeeForm.valueChanges.subscribe((val) => { this.formValuesChanged.emit(val); });
+  get name() {
+    return this.employeeForm.get('name')!;
+  }
+  get position() {
+    return this.employeeForm.get('position')!;
+  }
+  get level() {
+    return this.employeeForm.get('level')!;
   }
 
   submitForm() {
-    this.formSubmitted.emit(this.employeeForm.value);
+    this.formSubmitted.emit(this.employeeForm.value as Employee);
   }
 }

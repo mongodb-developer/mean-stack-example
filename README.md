@@ -2,7 +2,7 @@
 
 This is a simple CRUD application built using the MEAN (MongoDB, Express, Angular, Node.js) stack. You can also follow the step-by-step [tutorial](https://www.mongodb.com/languages/mean-stack-tutorial) for building this application.
 
-![Demonstration of the web application](demo.gif)
+![Demonstration of the web application](mean-demo.gif)
 
 ## How To Run
 
@@ -48,6 +48,12 @@ When both applications are built and running, open your browser on http://localh
         <a href="https://bleything.net/">
             <img src="https://avatars.githubusercontent.com/u/270?v=4" width="100px;" alt=""/><br />
             <sub><b>Ben Bleything</b></sub>
+        </a><br />
+    </td>
+    <td align="center">
+        <a href="https://youtube.com/codestackr/">
+            <img src="https://avatars.githubusercontent.com/u/52665907?v=4" width="100px;" alt=""/><br />
+            <sub><b>Jesse Hall @codeSTACKr</b></sub>
         </a><br />
     </td>
   </tr>

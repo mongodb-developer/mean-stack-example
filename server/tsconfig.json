@@ -1,17 +1,12 @@
 {
-    "compilerOptions": {
-        "module": "commonjs",
-        "esModuleInterop": true,
-        "target": "es6",
-        "noImplicitAny": true,
-        "moduleResolution": "node",
-        "sourceMap": true,
-        "outDir": "dist",
-        "baseUrl": ".",
-        "allowJs": true,
-        "paths": {
-            "*": ["node_modules/*"]
-        }
-    },
-    "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "compilerOptions": {
+    "target": "es2016", 
+    "module": "commonjs", 
+    "esModuleInterop": true,  
+    "forceConsistentCasingInFileNames": true, 
+    "strict": true,     
+    "skipLibCheck": true,
+    "outDir": "./dist"
+  }
 }
