@@ -38,6 +38,6 @@
     "url": "https://github.com/mongodb-developer/mean-stack-example.git"
   },
   "devDependencies": {
-    "concurrently": "^7.1.0"
+    "concurrently": "^9.2.1"
   }
 }
