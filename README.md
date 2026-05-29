@@ -1,202 +1,190 @@
-# MEAN Employee Management App with MongoDB
+# MEAN Stack Example: Employee Records App (MongoDB, Express, Angular, Node.js)
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/mongodb-developer/mean-stack-example)
+A full-stack CRUD application built with MongoDB, Express, Angular, and Node.js (MEAN).
 
-A full-stack MEAN example that demonstrates CRUD operations for employee records with Angular on the frontend and an Express + TypeScript API on the backend. This repository is intended for developers learning practical MongoDB patterns in a production-style web stack.
+Companion code for the [MEAN Stack Tutorial](https://www.mongodb.com/languages/mean-stack-tutorial?utm_campaign=devrel&utm_medium=github&utm_content=mean.stack.example&utm_term=learning.fuel).
 
-Use this app to learn how to model records, validate schema shape in MongoDB, and wire frontend forms to a REST API.
+[![CI](https://github.com/mongodb-developer/mean-stack-example/actions/workflows/ci.yml/badge.svg)](https://github.com/mongodb-developer/mean-stack-example/actions/workflows/ci.yml)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/mongodb-developer/mean-stack-example?style=social)](https://github.com/mongodb-developer/mean-stack-example/stargazers)
 
-![Demonstration of the web application](mean-demo.gif)
+## Project Overview
 
-## Capabilities / Features
+This project demonstrates an employee record tracker:
 
-- Create, list, update, and delete employee records
-- Angular UI with editable employee table and form-driven updates
-- Express API with TypeScript route handlers for CRUD operations
-- MongoDB JSON Schema validation for employee documents
-- Seed script for deterministic local demo data
-- CI workflow for dependency install, build, lint, and API smoke check
+- Create records
+- Read records from MongoDB
+- Update records
+- Delete records
 
-## Tech Stack
+The Angular app in `client` calls an Express API in `server`, and data is stored in MongoDB.
+
+## MEAN Stack Architecture
+
+```text
+┌─────────────────────┐       REST (JSON)      ┌──────────────────────────┐
+│   Angular (CLI)     │ ─────────────────────► │  Express API             │
+│   client            │ ◄───────────────────── │  server                  │
+│   :4200             │                        │  :5200                   │
+└─────────────────────┘                        └───────────┬──────────────┘
+                                                           │ MongoDB Node.js driver
+                                                           ▼
+                                               ┌──────────────────────────┐
+                                               │  MongoDB                 │
+                                               │  database: meanStackExample
+                                               │  collection: employees   │
+                                               └──────────────────────────┘
+```
+
+Stack:
 
 - Frontend: Angular 21, Angular Material
-- Backend: Node.js, Express, TypeScript
-- Database: MongoDB
-- Tooling: ESLint, concurrently, GitHub Actions
+- Backend: Node.js, Express 4, TypeScript, MongoDB Node.js Driver 6
+- Database: MongoDB (`meanStackExample.employees` collection)
+
+## Project Structure
+
+```text
+client/   # Angular frontend
+server/   # Express API + MongoDB integration
+```
 
 ## Prerequisites
 
 - Node.js 20+
-- npm 10+
-- A running MongoDB instance (local Docker or MongoDB Atlas)
+- npm 9+
+- A local MongoDB instance or a free [MongoDB Atlas](https://www.mongodb.com/atlas?utm_campaign=devrel&utm_medium=github&utm_content=mean.stack.example&utm_term=learning.fuel) cluster
 
-## Architecture Overview
-
-The Angular app talks to an Express API running on `http://localhost:5200`. The API reads and writes the `employees` collection in MongoDB and applies JSON schema validation during startup.
-
-```mermaid
-flowchart LR
-    A[Angular Client\nclient/] -->|HTTP /employees| B[Express API\nserver/src/server.ts]
-    B --> C[Employee Routes\nserver/src/employee.routes.ts]
-    C --> D[(MongoDB\nmeanStackExample.employees)]
-    B --> E[Schema Validation\nserver/src/database.ts]
-```
-
-## Quick Start
-
-### 1. Install dependencies
+## Quick Start and MongoDB Setup
 
 ```bash
-npm install
-```
+# 1) Clone
+git clone https://github.com/mongodb-developer/mean-stack-example.git
+cd mean-stack-example
 
-### 2. Configure environment variables
-
-```bash
+# 2) Create server environment file
 cp server/.env.example server/.env
 ```
 
-If you are using MongoDB Atlas, replace `ATLAS_URI` in `server/.env` with your Atlas connection string.
+Update `server/.env` with one of the following `ATLAS_URI` values:
 
-### 3. Seed sample data
+Local MongoDB:
 
-```bash
-npm run seed
+```env
+ATLAS_URI=mongodb://localhost:27017/meanStackExample?appName=mean-stack-example
+PORT=5200
 ```
 
-Expected outcome: terminal prints that sample employees were inserted into `employees`.
+Atlas cluster:
 
-### 4. Start the app
+```env
+ATLAS_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/meanStackExample?retryWrites=true&w=majority
+PORT=5200
+```
+
+If you are new to Atlas, use the [Atlas quick start guide](https://www.mongodb.com/docs/atlas/getting-started/?utm_campaign=devrel&utm_medium=github&utm_content=mean.stack.example&utm_term=learning.fuel) and then paste your connection string into `ATLAS_URI`.
+
+Optional: seed sample data:
 
 ```bash
+cd server && npm run seed
+```
+
+Start the backend API:
+
+```bash
+cd server
+npm install
 npm start
 ```
 
-Expected outcome:
-
-- Angular app: `http://localhost:4200`
-- API health endpoint: `http://localhost:5200/healthcheck`
-
-## Run in Codespaces / Dev Container
-
-1. Open this repository in GitHub Codespaces using the badge above.
-2. Wait for container initialization to complete.
-3. Run the app:
+Start the frontend in a second terminal:
 
 ```bash
+cd client
+npm install
 npm start
 ```
 
-Expected outcome:
+Open `http://localhost:4200`.
 
-- Angular app: `http://localhost:4200`
-- API health endpoint: `http://localhost:5200/healthcheck`
+## GitHub Codespaces and Dev Containers
 
-Dev Container image policy:
+GitHub Codespaces is an easy and fast way to get this project running without installing anything locally. It uses a dev container, which is a Docker environment configured for development.
 
-- MongoDB Atlas Local: `mongodb/mongodb-atlas-local:8.0` (tracks latest 8.0 patch)
-- Dev container runtime: `mcr.microsoft.com/devcontainers/javascript-node:1-22-bookworm` (tracks latest 22/bookworm patch)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/mongodb-developer/mean-stack-example?quickstart=1)
 
-## Environment Variables
+## REST API Endpoints
 
-| Name | Required | Example | Description |
-| --- | --- | --- | --- |
-| `ATLAS_URI` | Yes | `mongodb://localhost:27017/meanStackExample?appName=mean-stack-example` | MongoDB connection string used by server and seed script |
-| `PORT` | No | `5200` | Express API port (defaults to `5200`) |
+Base URL: `http://localhost:5200`
 
-## Project Structure
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/healthcheck` | Check API readiness |
+| `GET` | `/employees` | Retrieve all employees |
+| `GET` | `/employees/:id` | Retrieve one employee by ID |
+| `POST` | `/employees` | Create an employee |
+| `PUT` | `/employees/:id` | Update an employee |
+| `DELETE` | `/employees/:id` | Delete an employee |
 
-- `client/` Angular application
-- `server/src/` Express API and MongoDB connection logic
-- `server/scripts/seed.ts` seed script for demo data
-- `AGENTS.md` instructions for coding agents
-- `EDD.md` schema contract for MongoDB documents
+Example request body for create or update:
 
-## API Overview
-
-| Method | Path | Purpose |
-| --- | --- | --- |
-| `GET` | `/healthcheck` | API readiness check |
-| `GET` | `/employees` | List all employees |
-| `GET` | `/employees/:id` | Get one employee |
-| `POST` | `/employees` | Create employee |
-| `PUT` | `/employees/:id` | Update employee |
-| `DELETE` | `/employees/:id` | Delete employee |
+```json
+{
+    "name": "Jane Smith",
+    "position": "Developer",
+    "level": "senior"
+}
+```
 
 ## MongoDB Features Demonstrated
 
-- JSON Schema validation with `collMod` / `createCollection`
-- Typed access to `employees` collection with the Node.js driver
-- Reusable connection setup for app runtime and seed workflows
-
-Why MongoDB for this app:
-
-- Flexible document model for iterative employee profile changes
-- Built-in schema validation to enforce data quality
-- Fast iteration for CRUD use cases common in admin dashboards
-
-Helpful docs:
-
-- [MongoDB Node.js Driver](https://www.mongodb.com/docs/drivers/node/current/)
-- [Schema Validation](https://www.mongodb.com/docs/manual/core/schema-validation/)
-- [MongoDB Atlas](https://www.mongodb.com/docs/atlas/)
-
-## Testing
-
-Run repository checks:
-
-```bash
-npm run build
-npm run test
-```
-
-Notes:
-
-- `server` tests run ESLint checks.
-- `client` tests run Angular/Karma tests.
+| Feature | Where |
+|---|---|
+| [MongoDB Node.js Driver](https://www.mongodb.com/docs/drivers/node/current/?utm_campaign=devrel&utm_medium=github&utm_content=mean.stack.example&utm_term=learning.fuel) | `server/src/database.ts` |
+| [CRUD operations](https://www.mongodb.com/docs/manual/crud/?utm_campaign=devrel&utm_medium=github&utm_content=mean.stack.example&utm_term=learning.fuel) | `server/src/employee.routes.ts` |
+| [MongoDB schema validation](https://www.mongodb.com/docs/manual/core/schema-validation/?utm_campaign=devrel&utm_medium=github&utm_content=mean.stack.example&utm_term=learning.fuel) | startup validation in `server/src/database.ts` |
+| [Environment-based connection setup](https://www.mongodb.com/docs/drivers/node/current/fundamentals/connection/connect/?utm_campaign=devrel&utm_medium=github&utm_content=mean.stack.example&utm_term=learning.fuel) | `ATLAS_URI` in `server/.env` |
 
 ## Troubleshooting
 
-### 1. `No ATLAS_URI environment variable has been defined`
+### Cannot connect to MongoDB Atlas
 
-Fix:
+- Verify `ATLAS_URI` in `server/.env`
+- Confirm your database user credentials are correct (Atlas)
+- Confirm your IP is in [Atlas Network Access](https://www.mongodb.com/docs/atlas/security/ip-access-list/?utm_campaign=devrel&utm_medium=github&utm_content=mean.stack.example&utm_term=learning.fuel)
 
-1. Ensure `server/.env` exists.
-2. Add a valid `ATLAS_URI` value.
+### Backend fails to start
 
-### 2. API starts but UI shows network errors
+- Check Node version: `node --version`
+- Confirm `server/.env` exists
+- Reinstall dependencies in `server`: `npm install`
 
-Fix:
+### Frontend shows empty data
 
-1. Confirm API is running at `http://localhost:5200/healthcheck`.
-2. Restart `npm start` and verify no startup errors in the server log.
+- Confirm backend is running on `:5200`
+- Open browser dev tools and check network requests
+- Confirm records exist in MongoDB (or run `cd server && npm run seed`)
 
-### 3. Seed script fails to connect
+### Port already in use
 
-Fix:
+- Change `PORT` in `server/.env`, or stop the process using `:5200`
 
-1. Ensure MongoDB is reachable at the URI in `server/.env`.
-2. For Atlas, whitelist your IP and verify credentials.
+## Community and Support
 
-### 4. `npm test` fails in headless environments
-
-Fix:
-
-1. Run `npm run test:server` for backend-only verification.
-2. Configure a browser launcher (for example, Chrome Headless) for Angular tests.
+- Use [GitHub Issues](https://github.com/mongodb-developer/mean-stack-example/issues) for bugs and feature requests
+- Use [MongoDB Community Forums](https://www.mongodb.com/community/forums/) for general MongoDB questions
 
 ## Additional Resources
 
-- [Build a MEAN Stack App with MongoDB Tutorial](https://www.mongodb.com/languages/mean-stack-tutorial)
+- [MEAN Stack Tutorial](https://www.mongodb.com/languages/mean-stack-tutorial?utm_campaign=devrel&utm_medium=github&utm_content=mean.stack.example&utm_term=learning.fuel)
+- [MongoDB Atlas Docs](https://www.mongodb.com/docs/atlas?utm_campaign=devrel&utm_medium=github&utm_content=mean.stack.example&utm_term=learning.fuel)
+- [MongoDB Node.js Driver Docs](https://www.mongodb.com/docs/drivers/node/current/?utm_campaign=devrel&utm_medium=github&utm_content=mean.stack.example&utm_term=learning.fuel)
 
-## Contributors
+## License
 
-- [Abirami Sukumaran](https://github.com/AbiramiSukumaran)
-- [Stanimira Vlaeva](https://github.com/sis0k0)
-- [Abdullah Osama](https://www.linkedin.com/in/abdulahosama)
-- [Ben Bleything](https://bleything.net/)
-- [Jesse Hall @codeSTACKr](https://youtube.com/codestackr/)
+[Apache 2.0](LICENSE)
 
 ## Disclaimer
 
-Use at your own risk. This is not a supported MongoDB product.
+This repository is for educational use and is not a supported MongoDB product.

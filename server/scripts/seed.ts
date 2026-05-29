@@ -23,7 +23,7 @@ const seedEmployees: Employee[] = [
 
 async function seedDatabase(): Promise<void> {
   const client = new mongodb.MongoClient(atlasUri, {
-    appName: "mean-stack-example-seed",
+    appName: "devrel-github-javascript-mean",
   });
 
   await client.connect();
