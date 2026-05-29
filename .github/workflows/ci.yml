@@ -1,0 +1,87 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+jobs:
+  build-and-smoke:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 1
+      matrix:
+        node-version: [20.x, 22.x]
+
+    services:
+      mongodb:
+        image: mongo:latest
+        options: >-
+          --health-cmd "mongosh --eval 'db.adminCommand({ ping: 1 })'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 27017:27017
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        env:
+          DATABASE_URI: mongodb://localhost:27017/
+        run: npm run build
+
+      - name: Server lint tests
+        env:
+          DATABASE_URI: mongodb://localhost:27017/
+        run: npm run test:server
+
+      - name: Integration tests
+        run: npm run test:integration
+
+      - name: Seed demo data
+        env:
+          DATABASE_URI: mongodb://localhost:27017/meanStackExample?appName=mean-stack-example-ci
+        run: npm run seed
+
+      - name: Start API
+        env:
+          DATABASE_URI: mongodb://localhost:27017/meanStackExample?appName=mean-stack-example-ci
+          PORT: 5300
+        run: |
+          npm run start:server > /tmp/server.log 2>&1 &
+          echo $! > /tmp/server.pid
+
+      - name: Wait for API health
+        run: |
+          for i in {1..30}; do
+            if curl -fsS http://localhost:5300/healthcheck >/dev/null; then
+              echo "API is ready"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "API did not become ready"
+          cat /tmp/server.log
+          exit 1
+
+      - name: Smoke check employee list endpoint
+        run: curl -fsS http://localhost:5300/employees
+
+      - name: Stop API
+        if: always()
+        run: |
+          if [ -f /tmp/server.pid ]; then
+            kill "$(cat /tmp/server.pid)" || true
+          fi

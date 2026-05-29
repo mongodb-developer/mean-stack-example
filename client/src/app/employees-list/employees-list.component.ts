@@ -1,4 +1,5 @@
-import { Component, OnInit, WritableSignal } from '@angular/core';
+import { Component, Inject, OnInit, PLATFORM_ID, WritableSignal, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { Employee } from '../employee';
 import { EmployeeService } from '../employee.service';
 import { RouterModule } from '@angular/router';
@@ -7,11 +8,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 
 @Component({
-  selector: 'app-employees-list',
-  standalone: true,
-  imports: [RouterModule, MatTableModule, MatButtonModule, MatCardModule],
-  styles: [
-    `
+    selector: 'app-employees-list',
+    imports: [RouterModule, MatTableModule, MatButtonModule, MatCardModule],
+    styles: [
+        `
       table {
         width: 100%;
 
@@ -20,8 +20,8 @@ import { MatCardModule } from '@angular/material/card';
         }
       }
     `,
-  ],
-  template: `
+    ],
+    template: `
     <mat-card>
       <mat-card-header>
         <mat-card-title>Employees List</mat-card-title>
@@ -66,10 +66,11 @@ import { MatCardModule } from '@angular/material/card';
         </button>
       </mat-card-actions>
     </mat-card>
-  `,
+  `
 })
 export class EmployeesListComponent implements OnInit {
-  employees$ = {} as WritableSignal<Employee[]>;
+  employees$ = signal<Employee[]>([]);
+  private readonly isBrowser: boolean;
   displayedColumns: string[] = [
     'col-name',
     'col-position',
@@ -77,10 +78,17 @@ export class EmployeesListComponent implements OnInit {
     'col-action',
   ];
 
-  constructor(private employeesService: EmployeeService) {}
+  constructor(
+    private employeesService: EmployeeService,
+    @Inject(PLATFORM_ID) platformId: object,
+  ) {
+    this.isBrowser = isPlatformBrowser(platformId);
+  }
 
   ngOnInit() {
-    this.fetchEmployees();
+    if (this.isBrowser) {
+      this.fetchEmployees();
+    }
   }
 
   deleteEmployee(id: string): void {

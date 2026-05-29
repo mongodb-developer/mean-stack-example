@@ -6,7 +6,9 @@ export const collections: {
 } = {};
 
 export async function connectToDatabase(uri: string) {
-    const client = new mongodb.MongoClient(uri);
+    const client = new mongodb.MongoClient(uri, {
+        appName: "devrel-github-javascript-mean",
+    });
     await client.connect();
 
     const db = client.db("meanStackExample");

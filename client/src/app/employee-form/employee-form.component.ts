@@ -7,16 +7,15 @@ import { MatButtonModule } from '@angular/material/button';
 import { Employee } from '../employee';
 
 @Component({
-  selector: 'app-employee-form',
-  standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatRadioModule,
-    MatButtonModule,
-  ],
-  styles: `
+    selector: 'app-employee-form',
+    imports: [
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatRadioModule,
+        MatButtonModule,
+    ],
+    styles: `
     .employee-form {
       display: flex;
       flex-direction: column;
@@ -30,7 +29,7 @@ import { Employee } from '../employee';
       width: 100%;
     }
   `,
-  template: `
+    template: `
     <form
       class="employee-form"
       autocomplete="off"
@@ -79,7 +78,7 @@ import { Employee } from '../employee';
         Add
       </button>
     </form>
-  `,
+  `
 })
 export class EmployeeFormComponent {
   initialState = input<Employee>();
