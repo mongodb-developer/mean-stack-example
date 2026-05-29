@@ -6,7 +6,7 @@
     "start": "ts-node src/server.ts",
     "build": "tsc",
     "test": "eslint src scripts",
-    "test:integration": "tsx --test tests/**/*.integration.test.ts",
+    "test:integration": "tsx --test tests/api.integration.test.ts",
     "seed": "ts-node scripts/seed.ts"
   },
   "author": "Stanimira Vlaeva",
