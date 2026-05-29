@@ -32,15 +32,15 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const database_1 = require("./database");
 const employee_routes_1 = require("./employee.routes");
-// Load environment variables from the .env file, where the ATLAS_URI is configured
+// Load environment variables from the .env file, where the DATABASE_URI is configured
 dotenv.config();
-const { ATLAS_URI } = process.env;
+const { DATABASE_URI } = process.env;
 const PORT = Number.parseInt((_a = process.env.PORT) !== null && _a !== void 0 ? _a : "5200", 10);
-if (!ATLAS_URI) {
-    console.error("No ATLAS_URI environment variable has been defined in config.env");
+if (!DATABASE_URI) {
+    console.error("No DATABASE_URI environment variable has been defined in config.env");
     process.exit(1);
 }
-(0, database_1.connectToDatabase)(ATLAS_URI)
+(0, database_1.connectToDatabase)(DATABASE_URI)
     .then(() => {
     const app = (0, express_1.default)();
     app.use((0, cors_1.default)());

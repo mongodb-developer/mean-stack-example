@@ -24,7 +24,7 @@ npm start
 
 Required:
 
-- `ATLAS_URI`: MongoDB connection string used by server and seed script
+- `DATABASE_URI`: MongoDB connection string used by server and seed script
 
 Optional:
 

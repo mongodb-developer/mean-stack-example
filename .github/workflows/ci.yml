@@ -39,12 +39,12 @@ jobs:
 
       - name: Build
         env:
-          ATLAS_URI: mongodb://localhost:27017/
+          DATABASE_URI: mongodb://localhost:27017/
         run: npm run build
 
       - name: Server lint tests
         env:
-          ATLAS_URI: mongodb://localhost:27017/
+          DATABASE_URI: mongodb://localhost:27017/
         run: npm run test:server
 
       - name: Integration tests
@@ -52,12 +52,12 @@ jobs:
 
       - name: Seed demo data
         env:
-          ATLAS_URI: mongodb://localhost:27017/meanStackExample?appName=mean-stack-example-ci
+          DATABASE_URI: mongodb://localhost:27017/meanStackExample?appName=mean-stack-example-ci
         run: npm run seed
 
       - name: Start API
         env:
-          ATLAS_URI: mongodb://localhost:27017/meanStackExample?appName=mean-stack-example-ci
+          DATABASE_URI: mongodb://localhost:27017/meanStackExample?appName=mean-stack-example-ci
           PORT: 5200
         run: |
           npm run start:server > /tmp/server.log 2>&1 &

@@ -66,23 +66,23 @@ cd mean-stack-example
 cp server/.env.example server/.env
 ```
 
-Update `server/.env` with one of the following `ATLAS_URI` values:
+Update `server/.env` with one of the following `DATABASE_URI` values:
 
 Local MongoDB:
 
 ```env
-ATLAS_URI=mongodb://localhost:27017/meanStackExample?appName=mean-stack-example
+DATABASE_URI=mongodb://localhost:27017/meanStackExample?appName=mean-stack-example
 PORT=5200
 ```
 
 Atlas cluster:
 
 ```env
-ATLAS_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/meanStackExample?retryWrites=true&w=majority
+DATABASE_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/meanStackExample?retryWrites=true&w=majority
 PORT=5200
 ```
 
-If you are new to Atlas, use the [Atlas quick start guide](https://www.mongodb.com/docs/atlas/getting-started/?utm_campaign=devrel&utm_medium=github&utm_content=mean.stack.example&utm_term=learning.fuel) and then paste your connection string into `ATLAS_URI`.
+If you are new to Atlas, use the [Atlas quick start guide](https://www.mongodb.com/docs/atlas/getting-started/?utm_campaign=devrel&utm_medium=github&utm_content=mean.stack.example&utm_term=learning.fuel) and then paste your connection string into `DATABASE_URI`.
 
 Optional: seed sample data:
 
@@ -144,13 +144,13 @@ Example request body for create or update:
 | [MongoDB Node.js Driver](https://www.mongodb.com/docs/drivers/node/current/?utm_campaign=devrel&utm_medium=github&utm_content=mean.stack.example&utm_term=learning.fuel) | `server/src/database.ts` |
 | [CRUD operations](https://www.mongodb.com/docs/manual/crud/?utm_campaign=devrel&utm_medium=github&utm_content=mean.stack.example&utm_term=learning.fuel) | `server/src/employee.routes.ts` |
 | [MongoDB schema validation](https://www.mongodb.com/docs/manual/core/schema-validation/?utm_campaign=devrel&utm_medium=github&utm_content=mean.stack.example&utm_term=learning.fuel) | startup validation in `server/src/database.ts` |
-| [Environment-based connection setup](https://www.mongodb.com/docs/drivers/node/current/fundamentals/connection/connect/?utm_campaign=devrel&utm_medium=github&utm_content=mean.stack.example&utm_term=learning.fuel) | `ATLAS_URI` in `server/.env` |
+| [Environment-based connection setup](https://www.mongodb.com/docs/drivers/node/current/fundamentals/connection/connect/?utm_campaign=devrel&utm_medium=github&utm_content=mean.stack.example&utm_term=learning.fuel) | `DATABASE_URI` in `server/.env` |
 
 ## Troubleshooting
 
 ### Cannot connect to MongoDB Atlas
 
-- Verify `ATLAS_URI` in `server/.env`
+- Verify `DATABASE_URI` in `server/.env`
 - Confirm your database user credentials are correct (Atlas)
 - Confirm your IP is in [Atlas Network Access](https://www.mongodb.com/docs/atlas/security/ip-access-list/?utm_campaign=devrel&utm_medium=github&utm_content=mean.stack.example&utm_term=learning.fuel)
 
