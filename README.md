@@ -25,7 +25,7 @@ The Angular app in `client` calls an Express API in `server`, and data is stored
 ┌─────────────────────┐       REST (JSON)      ┌──────────────────────────┐
 │   Angular (CLI)     │ ─────────────────────► │  Express API             │
 │   client            │ ◄───────────────────── │  server                  │
-│   :4200             │                        │  :5200                   │
+│   :4200             │                        │  :5300                   │
 └─────────────────────┘                        └───────────┬──────────────┘
                                                            │ MongoDB Node.js driver
                                                            ▼
@@ -71,15 +71,15 @@ Update `server/.env` with one of the following `DATABASE_URI` values:
 Local MongoDB:
 
 ```env
-DATABASE_URI=mongodb://localhost:27017/meanStackExample?appName=mean-stack-example
-PORT=5200
+DATABASE_URI=mongodb://localhost:27017/
+PORT=5300
 ```
 
 Atlas cluster:
 
 ```env
-DATABASE_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/meanStackExample?retryWrites=true&w=majority
-PORT=5200
+DATABASE_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/
+PORT=5300
 ```
 
 If you are new to Atlas, use the [Atlas quick start guide](https://www.mongodb.com/docs/atlas/getting-started/?utm_campaign=devrel&utm_medium=github&utm_content=mean.stack.example&utm_term=learning.fuel) and then paste your connection string into `DATABASE_URI`.
@@ -87,14 +87,13 @@ If you are new to Atlas, use the [Atlas quick start guide](https://www.mongodb.c
 Optional: seed sample data:
 
 ```bash
-cd server && npm run seed
+(cd server && npm install && npm run seed)
 ```
 
 Start the backend API:
 
 ```bash
 cd server
-npm install
 npm start
 ```
 
@@ -116,7 +115,7 @@ GitHub Codespaces is an easy and fast way to get this project running without in
 
 ## REST API Endpoints
 
-Base URL: `http://localhost:5200`
+Base URL: `http://localhost:5300`
 
 | Method | Endpoint | Description |
 |---|---|---|
@@ -162,13 +161,13 @@ Example request body for create or update:
 
 ### Frontend shows empty data
 
-- Confirm backend is running on `:5200`
+- Confirm backend is running on `:5300`
 - Open browser dev tools and check network requests
 - Confirm records exist in MongoDB (or run `cd server && npm run seed`)
 
 ### Port already in use
 
-- Change `PORT` in `server/.env`, or stop the process using `:5200`
+- Change `PORT` in `server/.env`, or stop the process using `:5300`
 
 ## Community and Support
 

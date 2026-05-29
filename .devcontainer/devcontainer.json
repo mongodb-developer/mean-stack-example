@@ -17,14 +17,14 @@
   },
   "forwardPorts": [
     4200,
-    5200,
+    5300,
     27017
   ],
   "portsAttributes": {
     "4200": {
       "label": "Angular Client"
     },
-    "5200": {
+    "5300": {
       "label": "Express API"
     },
     "27017": {

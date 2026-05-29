@@ -8,7 +8,7 @@ import { employeeRouter } from "./employee.routes";
 dotenv.config();
 
 const { DATABASE_URI } = process.env;
-const PORT = Number.parseInt(process.env.PORT ?? "5200", 10);
+const PORT = Number.parseInt(process.env.PORT ?? "5300", 10);
 
 if (!DATABASE_URI) {
   console.error(

@@ -12,10 +12,10 @@ export class ApiConfigService {
     // During SSR/build contexts, fall back to localhost for deterministic behavior.
     if (isPlatformBrowser(platformId)) {
       const { protocol, hostname } = window.location;
-      this.baseUrl = `${protocol}//${hostname}:5200`;
+      this.baseUrl = `${protocol}//${hostname}:5300`;
       return;
     }
 
-    this.baseUrl = 'http://localhost:5200';
+    this.baseUrl = 'http://localhost:5300';
   }
 }

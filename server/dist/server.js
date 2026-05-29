@@ -35,7 +35,7 @@ const employee_routes_1 = require("./employee.routes");
 // Load environment variables from the .env file, where the DATABASE_URI is configured
 dotenv.config();
 const { DATABASE_URI } = process.env;
-const PORT = Number.parseInt((_a = process.env.PORT) !== null && _a !== void 0 ? _a : "5200", 10);
+const PORT = Number.parseInt((_a = process.env.PORT) !== null && _a !== void 0 ? _a : "5300", 10);
 if (!DATABASE_URI) {
     console.error("No DATABASE_URI environment variable has been defined in config.env");
     process.exit(1);

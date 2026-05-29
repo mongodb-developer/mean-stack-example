@@ -28,7 +28,7 @@ Required:
 
 Optional:
 
-- `PORT`: API port (default: `5200`)
+- `PORT`: API port (default: `5300`)
 
 Configuration files:
 
