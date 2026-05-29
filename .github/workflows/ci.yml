@@ -47,6 +47,9 @@ jobs:
           ATLAS_URI: mongodb://localhost:27017/
         run: npm run test:server
 
+      - name: Integration tests
+        run: npm run test:integration
+
       - name: Seed demo data
         env:
           ATLAS_URI: mongodb://localhost:27017/meanStackExample?appName=mean-stack-example-ci

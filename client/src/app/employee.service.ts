@@ -1,7 +1,7 @@
-import { Inject, Injectable, PLATFORM_ID, signal } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Employee } from './employee';
+import { ApiConfigService } from './api-config.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,17 +13,9 @@ export class EmployeeService {
   
   constructor(
     private httpClient: HttpClient,
-    @Inject(PLATFORM_ID) platformId: object,
+    private apiConfig: ApiConfigService,
   ) {
-    // In browser (including Codespaces), target the current host on API port.
-    // During SSR/build contexts, fall back to localhost for deterministic behavior.
-    if (isPlatformBrowser(platformId)) {
-      const { protocol, hostname } = window.location;
-      this.url = `${protocol}//${hostname}:5200`;
-      return;
-    }
-
-    this.url = 'http://localhost:5200';
+    this.url = this.apiConfig.baseUrl;
   }
 
   private refreshEmployees() {

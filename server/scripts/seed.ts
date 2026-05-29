@@ -11,6 +11,8 @@ if (!ATLAS_URI) {
   process.exit(1);
 }
 
+const atlasUri = ATLAS_URI;
+
 const seedEmployees: Employee[] = [
   { name: "Ada Lovelace", position: "Backend Engineer", level: "senior" },
   { name: "Grace Hopper", position: "Platform Engineer", level: "senior" },
@@ -20,7 +22,7 @@ const seedEmployees: Employee[] = [
 ];
 
 async function seedDatabase(): Promise<void> {
-  const client = new mongodb.MongoClient(ATLAS_URI, {
+  const client = new mongodb.MongoClient(atlasUri, {
     appName: "mean-stack-example-seed",
   });
 

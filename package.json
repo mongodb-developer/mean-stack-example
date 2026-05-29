@@ -16,7 +16,8 @@
     "seed": "cd server && npm run seed",
     "test": "npm run prepare && concurrently \"npm run test:client\" \"npm run test:server\"",
     "test:client": "cd client && npm test",
-    "test:server": "cd server && npm test"
+    "test:server": "cd server && npm test",
+    "test:integration": "cd server && npm run test:integration"
   },
   "license": "Apache 2.0",
   "homepage": "https://github.com/mongodb-developer/mean-stack-example#readme",
