@@ -1,0 +1,27 @@
+services:
+  mongodb:
+    image: mongodb/mongodb-atlas-local:8.0
+    healthcheck:
+      test: ["CMD-SHELL", "mongosh --quiet --eval \"db.hello().isWritablePrimary\" | grep true"]
+      start_period: 20s
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    volumes:
+      - mongodb-data:/data/db
+      - mongodb-config:/data/configdb
+
+  app:
+    image: mcr.microsoft.com/devcontainers/javascript-node:1-22-bookworm
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    network_mode: service:mongodb
+    working_dir: /workspaces/mean-stack-example
+    command: sleep infinity
+    volumes:
+      - ..:/workspaces/mean-stack-example:cached
+
+volumes:
+  mongodb-data:
+  mongodb-config:

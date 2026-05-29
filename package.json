@@ -13,24 +13,11 @@
     "build": "npm run prepare && concurrently \"npm run build:server\" \"npm run build:client\"",
     "build:server": "cd server && npm run build",
     "build:client": "cd client && npm run build",
+    "seed": "cd server && npm run seed",
     "test": "npm run prepare && concurrently \"npm run test:client\" \"npm run test:server\"",
     "test:client": "cd client && npm test",
     "test:server": "cd server && npm test"
   },
-  "contributors": [
-    {
-      "name": "Abirami Sukumaran",
-      "url": "https://github.com/AbiramiSukumaran"
-    },
-    {
-      "name": "Stanimira Vlaeva",
-      "url": "https://github.com/sis0k0"
-    },
-    {
-      "name": "Jesse Hall - @codeSTACKr",
-      "url": "https://github.com/codeSTACKr"
-    }
-  ],
   "license": "Apache 2.0",
   "homepage": "https://github.com/mongodb-developer/mean-stack-example#readme",
   "repository": {

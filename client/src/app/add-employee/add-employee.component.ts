@@ -6,10 +6,9 @@ import { EmployeeService } from '../employee.service';
 import { MatCardModule } from '@angular/material/card';
 
 @Component({
-  selector: 'app-add-employee',
-  standalone: true,
-  imports: [EmployeeFormComponent, MatCardModule],
-  template: `
+    selector: 'app-add-employee',
+    imports: [EmployeeFormComponent, MatCardModule],
+    template: `
     <mat-card>
       <mat-card-header>
         <mat-card-title>Add a New Employee</mat-card-title>
@@ -21,7 +20,7 @@ import { MatCardModule } from '@angular/material/card';
       </mat-card-content>
     </mat-card>
   `,
-  styles: ``,
+    styles: ``
 })
 export class AddEmployeeComponent {
   constructor(

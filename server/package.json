@@ -5,7 +5,8 @@
   "scripts": {
     "start": "ts-node src/server.ts",
     "build": "tsc",
-    "test": "eslint ."
+    "test": "eslint src scripts",
+    "seed": "ts-node scripts/seed.ts"
   },
   "author": "Stanimira Vlaeva",
   "license": "Apache 2.0",
