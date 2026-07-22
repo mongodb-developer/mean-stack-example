@@ -1,4 +1,4 @@
-import { Component, effect, EventEmitter, input, Output } from '@angular/core';
+import { Component, effect, input, output, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -29,6 +29,7 @@ import { Employee } from '../employee';
       width: 100%;
     }
   `,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     template: `
     <form
       class="employee-form"
@@ -81,13 +82,11 @@ import { Employee } from '../employee';
   `
 })
 export class EmployeeFormComponent {
+  private readonly formBuilder = inject(FormBuilder);
+
   initialState = input<Employee>();
 
-  @Output()
-  formValuesChanged = new EventEmitter<Employee>();
-
-  @Output()
-  formSubmitted = new EventEmitter<Employee>();
+  formSubmitted = output<Employee>();
 
   employeeForm = this.formBuilder.group({
     name: ['', [Validators.required, Validators.minLength(3)]],
@@ -95,7 +94,7 @@ export class EmployeeFormComponent {
     level: ['junior', [Validators.required]],
   });
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor() {
     effect(() => {
       this.employeeForm.setValue({
         name: this.initialState()?.name || '',

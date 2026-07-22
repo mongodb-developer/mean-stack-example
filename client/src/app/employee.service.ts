@@ -1,40 +1,19 @@
-import { Injectable, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Service, inject } from '@angular/core';
+import { HttpClient, httpResource } from '@angular/common/http';
 import { Employee } from './employee';
 import { ApiConfigService } from './api-config.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Service()
 export class EmployeeService {
-  private readonly url: string;
-  employees$ = signal<Employee[]>([]);
-  employee$ = signal<Employee>({} as Employee);
-  
-  constructor(
-    private httpClient: HttpClient,
-    private apiConfig: ApiConfigService,
-  ) {
-    this.url = this.apiConfig.baseUrl;
-  }
+  private readonly httpClient = inject(HttpClient);
+  private readonly url = inject(ApiConfigService).baseUrl;
 
-  private refreshEmployees() {
-    this.httpClient.get<Employee[]>(`${this.url}/employees`)
-      .subscribe(employees => {
-        this.employees$.set(employees);
-      });
-  }
-
-  getEmployees() {
-    this.refreshEmployees();
-    return this.employees$();
-  }
+  readonly employeesResource = httpResource<Employee[]>(() => `${this.url}/employees`, {
+    defaultValue: [],
+  });
 
   getEmployee(id: string) {
-    this.httpClient.get<Employee>(`${this.url}/employees/${id}`).subscribe(employee => {
-      this.employee$.set(employee);
-      return this.employee$();
-    });
+    return this.httpClient.get<Employee>(`${this.url}/employees/${id}`);
   }
 
   createEmployee(employee: Employee) {

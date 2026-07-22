@@ -1,6 +1,4 @@
-import { Component, Inject, OnInit, PLATFORM_ID, WritableSignal, signal } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
-import { Employee } from '../employee';
+import { Component, ChangeDetectionStrategy, computed, inject } from '@angular/core';
 import { EmployeeService } from '../employee.service';
 import { RouterModule } from '@angular/router';
 import { MatTableModule } from '@angular/material/table';
@@ -21,13 +19,14 @@ import { MatCardModule } from '@angular/material/card';
       }
     `,
     ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
     template: `
     <mat-card>
       <mat-card-header>
         <mat-card-title>Employees List</mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <table mat-table [dataSource]="employees$()">
+        <table mat-table [dataSource]="employees()">
           <ng-container matColumnDef="col-name">
             <th mat-header-cell *matHeaderCellDef>Name</th>
             <td mat-cell *matCellDef="let element">{{ element.name }}</td>
@@ -68,9 +67,14 @@ import { MatCardModule } from '@angular/material/card';
     </mat-card>
   `
 })
-export class EmployeesListComponent implements OnInit {
-  employees$ = signal<Employee[]>([]);
-  private readonly isBrowser: boolean;
+export class EmployeesListComponent {
+  private readonly employeeService = inject(EmployeeService);
+  private readonly employeesResource = this.employeeService.employeesResource;
+
+  protected readonly employees = computed(() =>
+    this.employeesResource.hasValue() ? this.employeesResource.value() : []
+  );
+
   displayedColumns: string[] = [
     'col-name',
     'col-position',
@@ -78,27 +82,9 @@ export class EmployeesListComponent implements OnInit {
     'col-action',
   ];
 
-  constructor(
-    private employeesService: EmployeeService,
-    @Inject(PLATFORM_ID) platformId: object,
-  ) {
-    this.isBrowser = isPlatformBrowser(platformId);
-  }
-
-  ngOnInit() {
-    if (this.isBrowser) {
-      this.fetchEmployees();
-    }
-  }
-
   deleteEmployee(id: string): void {
-    this.employeesService.deleteEmployee(id).subscribe({
-      next: () => this.fetchEmployees(),
+    this.employeeService.deleteEmployee(id).subscribe({
+      next: () => this.employeesResource.reload(),
     });
-  }
-
-  private fetchEmployees(): void {
-    this.employees$ = this.employeesService.employees$;
-    this.employeesService.getEmployees();
   }
 }
