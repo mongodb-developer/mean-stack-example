@@ -1,6 +1,6 @@
-import { Component, OnInit, WritableSignal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input, inject } from '@angular/core';
 import { EmployeeFormComponent } from '../employee-form/employee-form.component';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { Employee } from '../employee';
 import { EmployeeService } from '../employee.service';
 import { MatCardModule } from '@angular/material/card';
@@ -21,32 +21,21 @@ import { MatCardModule } from '@angular/material/card';
       </mat-card-content>
     </mat-card>
   `,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     styles: ``
 })
-export class EditEmployeeComponent implements OnInit {
-  employee = {} as WritableSignal<Employee>;
+export class EditEmployeeComponent {
+  private readonly router = inject(Router);
+  private readonly employeeService = inject(EmployeeService);
 
-  constructor(
-    private router: Router,
-    private route: ActivatedRoute,
-    private employeeService: EmployeeService
-  ) {}
-
-  ngOnInit() {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (!id) {
-      alert('No id provided');
-    }
-
-    this.employeeService.getEmployee(id!);
-    this.employee = this.employeeService.employee$;
-  }
+  employee = input.required<Employee>();
 
   editEmployee(employee: Employee) {
     this.employeeService
       .updateEmployee(this.employee()._id || '', employee)
       .subscribe({
         next: () => {
+          this.employeeService.employeesResource.reload();
           this.router.navigate(['/']);
         },
         error: (error) => {

@@ -3,5 +3,5 @@ import { bootstrapApplication } from '@angular/platform-browser';
 import { appConfig } from './app/app.config';
 import { AppComponent } from './app/app.component';
 
-bootstrapApplication(AppComponent, {...appConfig, providers: [provideZoneChangeDetection(), ...appConfig.providers]})
+bootstrapApplication(AppComponent, {...appConfig, providers: [provideZoneChangeDetection({ eventCoalescing: true }), ...appConfig.providers]})
   .catch((err) => console.error(err));

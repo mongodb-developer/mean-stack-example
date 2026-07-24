@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { EmployeeFormComponent } from '../employee-form/employee-form.component';
 import { Employee } from '../employee';
@@ -20,17 +20,17 @@ import { MatCardModule } from '@angular/material/card';
       </mat-card-content>
     </mat-card>
   `,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     styles: ``
 })
 export class AddEmployeeComponent {
-  constructor(
-    private router: Router,
-    private employeeService: EmployeeService
-  ) {}
+  private readonly router = inject(Router);
+  private readonly employeeService = inject(EmployeeService);
 
   addEmployee(employee: Employee) {
     this.employeeService.createEmployee(employee).subscribe({
       next: () => {
+        this.employeeService.employeesResource.reload();
         this.router.navigate(['/']);
       },
       error: (error) => {
@@ -38,6 +38,5 @@ export class AddEmployeeComponent {
         console.error(error);
       },
     });
-    this.employeeService.getEmployees();
   }
 }
