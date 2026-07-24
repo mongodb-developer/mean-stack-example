@@ -84,7 +84,7 @@ import { Employee } from '../employee';
     </form>
   `
 })
-export class EmployeeFormComponent {
+export class EmployeeForm {
   private readonly formBuilder = inject(FormBuilder);
 
   initialState = input<Employee>();

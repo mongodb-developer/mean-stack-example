@@ -1,8 +1,7 @@
-import { provideZoneChangeDetection } from "@angular/core";
 import { bootstrapApplication, BootstrapContext } from '@angular/platform-browser';
-import { AppComponent } from './app/app.component';
+import { App } from './app/app';
 import { config } from './app/app.config.server';
 
-const bootstrap = (context: BootstrapContext) => bootstrapApplication(AppComponent, {...config, providers: [provideZoneChangeDetection({ eventCoalescing: true }), ...config.providers]}, context);
+const bootstrap = (context: BootstrapContext) => bootstrapApplication(App, config, context);
 
 export default bootstrap;

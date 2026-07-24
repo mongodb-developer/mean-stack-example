@@ -1,13 +1,13 @@
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { EmployeeFormComponent } from '../employee-form/employee-form.component';
+import { EmployeeForm } from '../employee-form/employee-form';
 import { Employee } from '../employee';
 import { EmployeeService } from '../employee.service';
 import { MatCardModule } from '@angular/material/card';
 
 @Component({
     selector: 'app-add-employee',
-    imports: [EmployeeFormComponent, MatCardModule],
+    imports: [EmployeeForm, MatCardModule],
     template: `
     <mat-card>
       <mat-card-header>
@@ -23,7 +23,7 @@ import { MatCardModule } from '@angular/material/card';
     changeDetection: ChangeDetectionStrategy.OnPush,
     styles: ``
 })
-export class AddEmployeeComponent {
+export class AddEmployee {
   private readonly router = inject(Router);
   private readonly employeeService = inject(EmployeeService);
 

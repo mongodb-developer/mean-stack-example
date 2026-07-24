@@ -67,7 +67,7 @@ import { MatCardModule } from '@angular/material/card';
     </mat-card>
   `
 })
-export class EmployeesListComponent {
+export class EmployeesList {
   private readonly employeeService = inject(EmployeeService);
   private readonly employeesResource = this.employeeService.employeesResource;
 
