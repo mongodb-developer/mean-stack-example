@@ -30,7 +30,7 @@
             "server": "src/main.server.ts",
             "outputMode": "server",
             "security": {
-              "allowedHosts": ["localhost"]
+              "allowedHosts": ["localhost", ".app.github.dev"]
             },
             "ssr": {
               "entry": "server.ts"
