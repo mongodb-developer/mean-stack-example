@@ -9,6 +9,11 @@
     }
   },
   "customizations": {
+    "codespaces": {
+      "openFiles": [
+        "codespaces.md"
+      ]
+    },
     "vscode": {
       "extensions": [
         "mongodb.mongodb-vscode"
@@ -22,7 +27,8 @@
   ],
   "portsAttributes": {
     "4200": {
-      "label": "Angular Client"
+      "label": "Angular Client",
+      "onAutoForward": "openPreview"
     },
     "5300": {
       "label": "Express API"
@@ -35,5 +41,10 @@
   "postStartCommand": "bash -lc 'for i in {1..60}; do mongosh --quiet \"$DATABASE_URI\" --eval \"db.hello().isWritablePrimary\" | grep -q true && break; sleep 2; done; npm run seed'",
   "remoteEnv": {
     "DATABASE_URI": "mongodb://localhost:27017/meanStackExample?appName=mean-stack-example-devcontainer"
+  },
+  "postAttachCommand": {
+    "server": "cd server && npm start",
+    "client": "export NG_CLI_ANALYTICS=\"false\"; cd client && npm start",
+    "portSetup": "sleep 5 && .devcontainer/portSetup.sh"
   }
 }
