@@ -28,6 +28,9 @@ import { Employee } from '../employee';
     .mat-mdc-form-field {
       width: 100%;
     }
+    .mat-mdc-radio-group {
+      margin-top: 1rem;
+    }
   `,
     changeDetection: ChangeDetectionStrategy.OnPush,
     template: `
