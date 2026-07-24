@@ -14,7 +14,10 @@ export function app(): express.Express {
   const serverDistFolder = dirname(fileURLToPath(import.meta.url));
   const browserDistFolder = resolve(serverDistFolder, '../browser');
 
-  const angularApp = new AngularNodeAppEngine();
+  // Codespaces (and other hosted dev/proxy setups) terminate TLS at a trusted
+  // reverse proxy that forwards the original request via X-Forwarded-* headers.
+  // Trust them so Angular reconstructs the correct request URL.
+  const angularApp = new AngularNodeAppEngine({ trustProxyHeaders: true });
 
   // Example Express Rest API endpoints
   // server.get('/api/**', (req, res) => { });
