@@ -37,8 +37,8 @@
       "label": "MongoDB"
     }
   },
-  "postCreateCommand": "npm install",
-  "postStartCommand": "bash -lc 'for i in {1..60}; do mongosh --quiet \"$DATABASE_URI\" --eval \"db.hello().isWritablePrimary\" | grep -q true && break; sleep 2; done; npm run seed'",
+  "postCreateCommand": "npm install && bash .devcontainer/track.sh created || true",
+  "postStartCommand": "bash -lc 'for i in {1..60}; do mongosh --quiet \"$DATABASE_URI\" --eval \"db.hello().isWritablePrimary\" | grep -q true && break; sleep 2; done; npm run seed; bash .devcontainer/track.sh started || true'",
   "remoteEnv": {
     "DATABASE_URI": "mongodb://localhost:27017/meanStackExample?appName=mean-stack-example-devcontainer"
   },
