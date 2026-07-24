@@ -24,6 +24,6 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     </main>
   `
 })
-export class AppComponent {
+export class App {
   title = 'client';
 }
