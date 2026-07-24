@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "main": "src/server.ts",
   "scripts": {
-    "start": "ts-node src/server.ts",
+    "start": "tsx src/server.ts",
     "build": "tsc",
     "test": "eslint src scripts",
     "test:integration": "tsx --test tests/api.integration.test.ts",
-    "seed": "ts-node scripts/seed.ts"
+    "seed": "tsx scripts/seed.ts"
   },
   "author": "Stanimira Vlaeva",
   "license": "Apache 2.0",
@@ -27,7 +27,6 @@
     "eslint": "^8.56.0",
     "mongodb-memory-server": "^10.1.4",
     "supertest": "^7.1.1",
-    "ts-node": "^10.9.2",
     "tsx": "^4.20.3",
     "typescript": "^5.3.3"
   }
