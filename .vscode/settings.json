@@ -1,0 +1,10 @@
+{
+    "mdb.presetConnections": [
+        {
+            "name": "Local Database",
+            "connectionString": "mongodb://localhost:27017"
+        }
+    ],
+    "mdb.showOverviewPageAfterInstall": false,
+    "workbench.secondarySideBar.defaultVisibility": "hidden"
+}

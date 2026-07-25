@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "MongoDB": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mongodb-mcp-server@latest",
+        "--connectionString",
+        "mongodb://localhost:27017/meanStackExample"
+      ]
+    }
+  }
+}

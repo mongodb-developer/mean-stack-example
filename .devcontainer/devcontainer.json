@@ -9,13 +9,9 @@
     }
   },
   "customizations": {
-    "codespaces": {
-      "openFiles": [
-        "codespaces.md"
-      ]
-    },
     "vscode": {
       "extensions": [
+        "angular.ng-template",
         "mongodb.mongodb-vscode"
       ]
     }
