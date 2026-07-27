@@ -4,8 +4,7 @@ import { catchError, of } from 'rxjs';
 import { EmployeesList } from './employees-list/employees-list';
 import { AddEmployee } from './add-employee/add-employee';
 import { EditEmployee } from './edit-employee/edit-employee';
-import { Employee } from './employee';
-import { EmployeeService } from './employee.service';
+import { Employee, EmployeeService } from './employee';
 
 const employeeResolver: ResolveFn<Employee | RedirectCommand> = (route) => {
   const router = inject(Router);

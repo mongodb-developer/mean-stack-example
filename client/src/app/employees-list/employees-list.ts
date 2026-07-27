@@ -1,5 +1,5 @@
 import { Component, ChangeDetectionStrategy, computed, inject } from '@angular/core';
-import { EmployeeService } from '../employee.service';
+import { EmployeeService } from '../employee';
 import { RouterModule } from '@angular/router';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
