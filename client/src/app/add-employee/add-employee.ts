@@ -2,7 +2,7 @@ import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { EmployeeForm } from '../employee-form/employee-form';
 import { Employee } from '../employee';
-import { EmployeeService } from '../employee.service';
+import { EmployeeService } from '../employee';
 import { MatCardModule } from '@angular/material/card';
 
 @Component({

@@ -3,19 +3,19 @@ import { RouterOutlet } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
 @Component({
-    selector: 'app-root',
+  selector: 'app-root',
   imports: [RouterOutlet, MatToolbarModule],
-    styles: [
-        `
+  styles: [
+    `
       main {
         display: flex;
         justify-content: center;
         padding: 2rem 4rem;
       }
     `,
-    ],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    template: `
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `
     <mat-toolbar>
       <span>Employees Management System</span>
     </mat-toolbar>
@@ -25,5 +25,4 @@ import { MatToolbarModule } from '@angular/material/toolbar';
   `
 })
 export class App {
-  title = 'client';
 }

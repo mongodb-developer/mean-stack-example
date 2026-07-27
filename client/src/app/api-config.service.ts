@@ -3,7 +3,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { resolveApiBaseUrl } from './api-url';
 
 @Service()
-export class ApiConfigService {
+export class ApiConfig {
   private readonly platformId = inject(PLATFORM_ID);
 
   // In the browser, derive the API URL from the current location so it works
