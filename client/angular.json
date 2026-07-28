@@ -69,7 +69,8 @@
         "serve": {
           "builder": "@angular/build:dev-server",
           "options": {
-            "allowedHosts": ["*.app.github.dev"]
+            "allowedHosts": ["*.app.github.dev"],
+            "proxyConfig": "./proxy.conf.json"
           },
           "configurations": {
             "production": {
