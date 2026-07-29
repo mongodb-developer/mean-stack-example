@@ -51,8 +51,8 @@ server/   # Express API + MongoDB integration
 
 ## Prerequisites
 
-- Node.js 20+
-- npm 9+
+- Node.js ^24.18.0
+- npm ^11.16.0
 - A local MongoDB instance or a free [MongoDB Atlas](https://www.mongodb.com/atlas?utm_campaign=devrel&utm_medium=github&utm_content=mean.stack.example&utm_term=learning.fuel) cluster
 
 ## Quick Start and MongoDB Setup
