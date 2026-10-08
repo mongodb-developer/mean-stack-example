@@ -1,19 +1,34 @@
-FROM node:17-slim AS build
+# ============================================
+# Stage 1: Build Angular application
+# ============================================
+FROM node:22-alpine AS builder
 
-WORKDIR /usr/src/app
-COPY package.json package-lock.json ./
+WORKDIR /app
 
-# Install dependencies and copy them to the container
-RUN npm install
+# Install dependencies
+COPY package*.json ./
+RUN npm ci
+
+# Copy application source
 COPY . .
 
-# Build the Angular application for production
-RUN npm run build --prod
+# Production build
+RUN npm run build -- --configuration production
 
-# Configure the nginx web server
-FROM nginx:1.17.1-alpine
+
+# ============================================
+# Stage 2: Serve with NGINX
+# ============================================
+FROM nginx:alpine
+
+# Copy Angular production build
+COPY --from=builder /app/dist/client/browser/. /usr/share/nginx/html
+
+RUN mv /usr/share/nginx/html/index.csr.html /usr/share/nginx/html/index.html
+
+# Custom NGINX configuration
 COPY nginx.conf /etc/nginx/nginx.conf
-COPY --from=build /usr/src/app/dist/client /usr/share/nginx/html
 
-# Run the web service on container startup.
+EXPOSE 80
+
 CMD ["nginx", "-g", "daemon off;"]

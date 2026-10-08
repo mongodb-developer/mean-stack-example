@@ -1,0 +1,73 @@
+services:
+
+  # ============================================
+  # MongoDB
+  # ============================================
+  database:
+    image: mongo:4.4
+    container_name: mean-db
+    restart: unless-stopped
+
+    volumes:
+      - mongo-data:/data/db
+
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mongo",
+          "--eval",
+          "db.adminCommand('ping')"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+
+  # ============================================
+  # Node.js + Express Backend
+  # ============================================
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+
+    container_name: mean-server
+    restart: unless-stopped
+
+    ports:
+      - "5300:5300"
+
+    environment:
+      DATABASE_URI: mongodb://database:27017/
+      PORT: 5300
+
+    depends_on:
+      database:
+        condition: service_healthy
+
+
+  # ============================================
+  # Angular + NGINX Frontend
+  # ============================================
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+
+    container_name: mean-client
+    restart: unless-stopped
+
+    ports:
+      - "8080:80"
+
+    depends_on:
+      - server
+
+
+# ============================================
+# Persistent MongoDB storage
+# ============================================
+volumes:
+  mongo-data:
