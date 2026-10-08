@@ -1,189 +1,803 @@
-# MEAN Stack Example: Employee Records App (MongoDB, Express, Angular, Node.js)
+# MEAN Stack Example: Employee Records App
 
-A full-stack CRUD application built with MongoDB, Express, Angular, and Node.js (MEAN).
+A full-stack employee management application built with the **MEAN stack** — MongoDB, Express, Angular, and Node.js.
 
-Companion code for the [MEAN Stack Tutorial](https://www.mongodb.com/languages/mean-stack-tutorial?utm_campaign=devrel&utm_source=github&utm_medium=referral&utm_content=mean.stack.example&utm_term=learning.fuel).
+This repository started from the original MEAN Stack Example application and has been extended as a practical **DevOps learning project**. The application is now containerized with Docker Compose, with Kubernetes and AWS/EKS planned as the next stages.
 
-[![CI](https://github.com/mongodb-developer/mean-stack-example/actions/workflows/ci.yml/badge.svg)](https://github.com/mongodb-developer/mean-stack-example/actions/workflows/ci.yml)
-[![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
-[![GitHub stars](https://img.shields.io/github/stars/mongodb-developer/mean-stack-example?style=social)](https://github.com/mongodb-developer/mean-stack-example/stargazers)
+> **Current focus:** Phase 1 — Docker Compose deployment
+
+---
 
 ## Project Overview
 
-This project demonstrates an employee record tracker:
+The application provides a simple employee record management system with full CRUD operations:
 
-- Create records
-- Read records from MongoDB
-- Update records
-- Delete records
+- Create employee records
+- Read employee records
+- Update employee records
+- Delete employee records
 
-The Angular app in `client` calls an Express API in `server`, and data is stored in MongoDB.
+The Angular frontend communicates with a Node.js/Express API, while employee data is stored in MongoDB.
 
-## MEAN Stack Architecture
+The original application architecture was:
 
 ```text
-┌─────────────────────┐       REST (JSON)      ┌──────────────────────────┐
-│   Angular (CLI)     │ ─────────────────────► │  Express API             │
-│   client            │ ◄───────────────────── │  server                  │
-│   :4200             │                        │  :5300                   │
-└─────────────────────┘                        └───────────┬──────────────┘
-                                                           │ MongoDB Node.js driver
-                                                           ▼
-                                               ┌──────────────────────────┐
-                                               │  MongoDB                 │
-                                               │  database: meanStackExample
-                                               │  collection: employees   │
-                                               └──────────────────────────┘
+Angular Frontend → Express API → MongoDB
 ```
 
-Stack:
+The current Dockerized architecture is:
 
-- Frontend: Angular 21, Angular Material
-- Backend: Node.js, Express 4, TypeScript, MongoDB Node.js Driver 6
-- Database: MongoDB (`meanStackExample.employees` collection)
+```text
+                    ┌─────────────────────────┐
+                    │       Browser            │
+                    │     localhost:8080       │
+                    └────────────┬────────────┘
+                                 │
+                                 ▼
+                    ┌─────────────────────────┐
+                    │   Angular + NGINX       │
+                    │      mean-client        │
+                    │        :80              │
+                    └────────────┬────────────┘
+                                 │ /api/
+                                 ▼
+                    ┌─────────────────────────┐
+                    │   Node.js + Express      │
+                    │      mean-server        │
+                    │        :5300            │
+                    └────────────┬────────────┘
+                                 │
+                                 ▼
+                    ┌─────────────────────────┐
+                    │       MongoDB 4.4        │
+                    │        mean-db           │
+                    │        :27017            │
+                    └─────────────────────────┘
+```
+
+---
+
+## Current Project Status
+
+| Phase | Status | Description |
+|---|---|---|
+| Phase 1 | ✅ Completed | Docker + Docker Compose |
+| Phase 2 | 🚧 Planned | Kubernetes deployment |
+| Phase 3 | ⏳ Planned | Advanced Kubernetes |
+| Phase 4 | ⏳ Planned | AWS / EKS deployment |
+
+---
+
+## Tech Stack
+
+### Application
+
+- **Frontend:** Angular
+- **Backend:** Node.js + Express + TypeScript
+- **Database:** MongoDB
+- **API:** REST / JSON
+
+### DevOps
+
+- Docker
+- Docker Compose
+- NGINX
+- Multi-stage Docker builds
+- Docker healthcheck
+- Named Docker volume
+- Docker network / service discovery
+
+### Planned
+
+- Kubernetes
+- Ingress
+- ConfigMaps / Secrets
+- Probes
+- HPA
+- RBAC
+- NetworkPolicy
+- CI/CD
+- AWS EKS
+
+---
 
 ## Project Structure
 
 ```text
-client/   # Angular frontend
-server/   # Express API + MongoDB integration
+mean-stack-example/
+│
+├── .github/
+│   ├── CODEOWNERS
+│   └── workflows/
+│       └── ci.yml
+│
+├── client/
+│   ├── src/
+│   ├── Dockerfile
+│   ├── nginx.conf
+│   ├── .dockerignore
+│   └── ...
+│
+├── server/
+│   ├── src/
+│   ├── scripts/
+│   ├── tests/
+│   ├── Dockerfile
+│   ├── .dockerignore
+│   ├── .env.example
+│   └── ...
+│
+├── docs/
+│   ├── architecture.md
+│   ├── deployment-guide.md
+│   └── troubleshooting.md
+│
+├── docker-compose.yml
+├── README.md
+├── LICENSE
+├── NOTICE
+└── .gitignore
+
 ```
+
+---
+
+# Docker Deployment
+
+## Docker Compose Services
+
+The application is split into three containers:
+
+| Service | Container | Purpose | Port |
+|---|---|---|---|
+| `client` | `mean-client` | Angular + NGINX | `8080 → 80` |
+| `server` | `mean-server` | Express API | `5300 → 5300` |
+| `database` | `mean-db` | MongoDB | internal `27017` |
+
+MongoDB is intentionally **not published to the host**. The backend reaches it through the Docker Compose service name:
+
+```text
+mongodb://database:27017/
+```
+
+Docker's internal DNS resolves `database` to the MongoDB container.
+
+---
+
+## Why NGINX Is Used
+
+The Angular application is built into static production files and served by NGINX.
+
+NGINX also acts as a reverse proxy for the backend API.
+
+For example:
+
+```text
+Browser
+   │
+   ├── /              → Angular application
+   │
+   └── /api/employees → NGINX
+                           │
+                           ▼
+                     mean-server:5300
+                           │
+                           ▼
+                        MongoDB
+```
+
+The `/api/` prefix is removed by the NGINX proxy configuration before the request reaches Express.
+
+Therefore:
+
+```text
+/api/employees
+```
+
+is forwarded internally as:
+
+```text
+/employees
+```
+
+which matches the backend route.
+
+---
+
+# Quick Start
 
 ## Prerequisites
 
-- Node.js ^24.18.0
-- npm ^11.16.0
-- A local MongoDB instance or a free [MongoDB Atlas](https://www.mongodb.com/atlas?utm_campaign=devrel&utm_source=github&utm_medium=referral&utm_content=mean.stack.example&utm_term=learning.fuel) cluster
+Install:
 
-## Quick Start and MongoDB Setup
+- Docker
+- Docker Compose plugin
+
+Verify:
 
 ```bash
-# 1) Clone
-git clone https://github.com/mongodb-developer/mean-stack-example.git
+docker --version
+docker compose version
+```
+
+No local Node.js or MongoDB installation is required for the Docker deployment.
+
+---
+
+## 1. Clone the Repository
+
+```bash
+git clone https://github.com/Shivam-Infra-Labs/mean-stack-example
 cd mean-stack-example
-
-# 2) Create server environment file
-cp server/.env.example server/.env
 ```
 
-Update `server/.env` with one of the following `DATABASE_URI` values:
+---
 
-Local MongoDB:
+## 2. Validate the Compose Configuration
 
-```env
-DATABASE_URI=mongodb://localhost:27017/
-PORT=5300
-```
-
-Atlas cluster:
-
-```env
-DATABASE_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/
-PORT=5300
-```
-
-If you are new to Atlas, use the [Atlas quick start guide](https://www.mongodb.com/docs/atlas/getting-started/?utm_campaign=devrel&utm_source=github&utm_medium=referral&utm_content=mean.stack.example&utm_term=learning.fuel) and then paste your connection string into `DATABASE_URI`.
-
-Optional: seed sample data:
+Before starting the application:
 
 ```bash
-(cd server && npm install && npm run seed)
+docker compose config
 ```
 
-Start the backend API:
+If the configuration is valid, Docker Compose will render the final configuration without errors.
+
+---
+
+## 3. Build the Images
 
 ```bash
-cd server
-npm start
+docker compose build
 ```
 
-Start the frontend in a second terminal:
+This builds:
+
+- Angular + NGINX image
+- Node.js + Express image
+
+MongoDB uses the official `mongo:4.4` image.
+
+---
+
+## 4. Start the Application
 
 ```bash
-cd client
-npm install
-npm start
+docker compose up -d
 ```
 
-Open `http://localhost:4200`.
+Check the containers:
 
-## GitHub Codespaces and Dev Containers
+```bash
+docker compose ps
+```
 
-GitHub Codespaces is an easy and fast way to get this project running without installing anything locally. It uses a dev container, which is a Docker environment configured for development.
+Expected services:
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/mongodb-developer/mean-stack-example?quickstart=1)
+```text
+mean-client
+mean-server
+mean-db
+```
 
-## REST API Endpoints
+---
 
-Base URL: `http://localhost:5300`
+## 5. Open the Application
+
+Open:
+
+```text
+http://localhost:8080
+```
+
+The Employee Management application should be available.
+
+---
+
+# Health Check
+
+The backend exposes:
+
+```text
+GET /healthcheck
+```
+
+From the host:
+
+```bash
+curl http://localhost:5300/healthcheck
+```
+
+Expected response:
+
+```json
+{"status":"ok"}
+```
+
+The MongoDB container also has a Docker healthcheck using:
+
+```bash
+mongo --eval "db.adminCommand('ping')"
+```
+
+The backend waits for MongoDB to become healthy before starting.
+
+---
+
+# REST API
+
+Backend base URL:
+
+```text
+http://localhost:5300
+```
 
 | Method | Endpoint | Description |
 |---|---|---|
-| `GET` | `/healthcheck` | Check API readiness |
+| `GET` | `/healthcheck` | Check API health |
 | `GET` | `/employees` | Retrieve all employees |
-| `GET` | `/employees/:id` | Retrieve one employee by ID |
+| `GET` | `/employees/:id` | Retrieve one employee |
 | `POST` | `/employees` | Create an employee |
 | `PUT` | `/employees/:id` | Update an employee |
 | `DELETE` | `/employees/:id` | Delete an employee |
 
-Example request body for create or update:
+Through the frontend NGINX proxy, API requests use:
+
+```text
+/api/employees
+```
+
+Example request body:
 
 ```json
 {
-    "name": "Jane Smith",
-    "position": "Developer",
-    "level": "senior"
+  "name": "Jane Smith",
+  "position": "Developer",
+  "level": "senior"
 }
 ```
 
-## MongoDB Features Demonstrated
+Supported levels:
 
-| Feature | Where |
-|---|---|
-| [MongoDB Node.js Driver](https://www.mongodb.com/docs/drivers/node/current/?utm_campaign=devrel&utm_source=github&utm_medium=referral&utm_content=mean.stack.example&utm_term=learning.fuel) | `server/src/database.ts` |
-| [CRUD operations](https://www.mongodb.com/docs/manual/crud/?utm_campaign=devrel&utm_source=github&utm_medium=referral&utm_content=mean.stack.example&utm_term=learning.fuel) | `server/src/employee.routes.ts` |
-| [MongoDB schema validation](https://www.mongodb.com/docs/manual/core/schema-validation/?utm_campaign=devrel&utm_source=github&utm_medium=referral&utm_content=mean.stack.example&utm_term=learning.fuel) | startup validation in `server/src/database.ts` |
-| [Environment-based connection setup](https://www.mongodb.com/docs/drivers/node/current/fundamentals/connection/connect/?utm_campaign=devrel&utm_source=github&utm_medium=referral&utm_content=mean.stack.example&utm_term=learning.fuel) | `DATABASE_URI` in `server/.env` |
+```text
+junior
+mid
+senior
+```
 
-## Troubleshooting
+---
 
-### Cannot connect to MongoDB Atlas
+# Database
 
-- Verify `DATABASE_URI` in `server/.env`
-- Confirm your database user credentials are correct (Atlas)
-- Confirm your IP is in [Atlas Network Access](https://www.mongodb.com/docs/atlas/security/ip-access-list/?utm_campaign=devrel&utm_source=github&utm_medium=referral&utm_content=mean.stack.example&utm_term=learning.fuel)
+The backend connects to MongoDB using the Docker service name:
 
-### Backend fails to start
+```text
+mongodb://database:27017/
+```
 
-- Check Node version: `node --version`
-- Confirm `server/.env` exists
-- Reinstall dependencies in `server`: `npm install`
+The application uses:
 
-### Frontend shows empty data
+```text
+Database: meanStackExample
+Collection: employees
+```
 
-- Confirm backend is running on `:5300`
-- Open browser dev tools and check network requests
-- Confirm records exist in MongoDB (or run `cd server && npm run seed`)
+The database uses a named Docker volume:
 
-### Port already in use
+```text
+mongo-data
+```
 
-- Change `PORT` in `server/.env`, or stop the process using `:5300`
+This means MongoDB data survives normal container recreation.
 
-## Community and Support
+For example:
 
-- Use [GitHub Issues](https://github.com/mongodb-developer/mean-stack-example/issues) for bugs and feature requests
-- Use [MongoDB Community Forums](https://www.mongodb.com/community/forums/) for general MongoDB questions
+```bash
+docker compose down
+docker compose up -d
+```
 
-## Additional Resources
+does **not** remove the named volume.
 
-- [MEAN Stack Tutorial](https://www.mongodb.com/languages/mean-stack-tutorial?utm_campaign=devrel&utm_source=github&utm_medium=referral&utm_content=mean.stack.example&utm_term=learning.fuel)
-- [MongoDB Atlas Docs](https://www.mongodb.com/docs/atlas?utm_campaign=devrel&utm_source=github&utm_medium=referral&utm_content=mean.stack.example&utm_term=learning.fuel)
-- [MongoDB Node.js Driver Docs](https://www.mongodb.com/docs/drivers/node/current/?utm_campaign=devrel&utm_source=github&utm_medium=referral&utm_content=mean.stack.example&utm_term=learning.fuel)
+To remove the database volume intentionally:
 
-## License
+```bash
+docker compose down -v
+```
 
-[Apache 2.0](LICENSE)
+> **Warning:** `docker compose down -v` deletes the Compose-managed database volume and therefore removes the stored MongoDB data.
 
-## Disclaimer
+---
 
-This repository is for educational use and is not a supported MongoDB product.
+# Docker Architecture
+
+## Container Communication
+
+The services communicate over the Docker Compose network.
+
+```text
+mean-client
+     │
+     │ HTTP
+     ▼
+mean-server:5300
+     │
+     │ MongoDB protocol
+     ▼
+database:27017
+```
+
+Containers should use Docker service names for internal communication rather than `localhost`.
+
+For example, inside the backend container:
+
+```text
+database:27017
+```
+
+is correct.
+
+This would be incorrect:
+
+```text
+localhost:27017
+```
+
+because `localhost` inside the backend container refers to the backend container itself.
+
+---
+
+# Multi-Stage Builds
+
+Both application images use multi-stage Docker builds.
+
+### Client
+
+```text
+Node.js
+   ↓
+Angular production build
+   ↓
+NGINX runtime image
+```
+
+### Server
+
+```text
+Node.js
+   ↓
+TypeScript build
+   ↓
+Production Node.js runtime image
+```
+
+This keeps build dependencies separate from the final runtime image.
+
+---
+
+# Data Persistence
+
+MongoDB uses:
+
+```yaml
+volumes:
+  - mongo-data:/data/db
+```
+
+The volume provides persistent database storage outside the MongoDB container lifecycle.
+
+A normal restart:
+
+```bash
+docker compose restart
+```
+
+does not remove the data.
+
+Recreating the containers with:
+
+```bash
+docker compose down
+docker compose up -d
+```
+
+also preserves the named volume.
+
+---
+
+# Useful Docker Commands
+
+### View containers
+
+```bash
+docker compose ps
+```
+
+### View logs
+
+```bash
+docker compose logs
+```
+
+### Follow logs
+
+```bash
+docker compose logs -f
+```
+
+### Backend logs
+
+```bash
+docker compose logs -f server
+```
+
+### Frontend logs
+
+```bash
+docker compose logs -f client
+```
+
+### MongoDB logs
+
+```bash
+docker compose logs -f database
+```
+
+### Restart
+
+```bash
+docker compose restart
+```
+
+### Stop containers
+
+```bash
+docker compose down
+```
+
+### Rebuild after changing code/configuration
+
+```bash
+docker compose build
+docker compose up -d
+```
+
+### Inspect running containers
+
+```bash
+docker ps
+```
+
+---
+
+# Documentation
+
+Detailed documentation is available in:
+
+- [`docs/architecture.md`](docs/architecture.md)
+- [`docs/deployment-guide.md`](docs/deployment-guide.md)
+- [`docs/troubleshooting.md`](docs/troubleshooting.md)
+
+---
+
+# Troubleshooting
+
+## Frontend Shows "Welcome to nginx!"
+
+Check the files inside the NGINX document root:
+
+```bash
+docker exec mean-client ls -lah /usr/share/nginx/html
+```
+
+The Angular build should be present.
+
+The current Angular build produces `index.csr.html`, so the client image moves it to:
+
+```text
+/usr/share/nginx/html/index.html
+```
+
+during the image build.
+
+---
+
+## API Healthcheck Fails
+
+Check:
+
+```bash
+docker compose ps
+```
+
+Then inspect backend logs:
+
+```bash
+docker compose logs server
+```
+
+Also test:
+
+```bash
+curl http://localhost:5300/healthcheck
+```
+
+---
+
+## Employee Data Is Missing
+
+Check that MongoDB is healthy:
+
+```bash
+docker compose ps
+```
+
+Then inspect:
+
+```bash
+docker compose logs database
+```
+
+Also verify that the MongoDB volume still exists.
+
+Avoid:
+
+```bash
+docker compose down -v
+```
+
+unless you intentionally want to delete the database volume.
+
+---
+
+# Known Project Note: MongoDB Version
+
+This learning deployment currently uses:
+
+```text
+mongo:4.4
+```
+
+This was intentionally selected for the local learning environment.
+
+**MongoDB 4.4 is an old/EOL release and should not be considered a production recommendation.**
+
+For future production-oriented deployment, the database version should be upgraded to a currently supported MongoDB release after compatibility testing.
+
+---
+
+# DevOps Roadmap
+
+The project is intentionally being developed in stages.
+
+## Phase 1 — Docker Compose ✅
+
+Completed:
+
+- Dockerized Angular frontend
+- NGINX static serving
+- NGINX reverse proxy
+- Dockerized Node.js backend
+- MongoDB container
+- Docker Compose orchestration
+- MongoDB healthcheck
+- Service dependency
+- Named persistent volume
+- Multi-stage builds
+- `.dockerignore`
+- CRUD verification
+- Restart/recreation persistence verification
+
+---
+
+## Phase 2 — Kubernetes 🚧
+
+Planned:
+
+```text
+Namespace
+Deployments
+Services
+ConfigMaps
+Secrets
+Persistent storage
+Ingress
+Liveness probes
+Readiness probes
+```
+
+The application will first be deployed locally using a Kubernetes learning cluster.
+
+---
+
+## Phase 3 — Advanced Kubernetes
+
+Planned:
+
+- HPA
+- RBAC
+- NetworkPolicy
+- PodDisruptionBudget
+- Centralized logging
+- Backup/restore
+- Security scanning
+- Rollback strategy
+- Smoke tests
+- Failure testing
+- Multiple environments
+
+Later:
+
+- Helm
+- Argo CD
+- Service mesh
+- Distributed tracing
+- Chaos/failure experiments
+
+---
+
+## Phase 4 — AWS / EKS
+
+After the local Kubernetes implementation is stable, the project can be moved toward AWS:
+
+```text
+AWS
+ │
+ └── EKS
+      │
+      ├── Frontend
+      ├── Backend
+      ├── Ingress
+      └── Supporting infrastructure
+```
+
+The goal is to progressively transform the original application into a realistic DevOps/cloud portfolio project rather than jumping directly to cloud deployment.
+
+---
+
+# Original Project
+
+This project is based on the original **MEAN Stack Example** application and its educational purpose.
+
+The original application demonstrates:
+
+- Angular frontend
+- Express API
+- MongoDB
+- CRUD operations
+- MongoDB schema validation
+
+The Docker and DevOps work in this repository extends that application into a containerized deployment workflow.
+
+---
+
+# License
+
+The original project is distributed under the **Apache 2.0** license.
+
+See [`LICENSE`](LICENSE) for the license text.
+
+---
+
+## Project Status
+
+**Current:** Docker Compose deployment completed and verified.
+
+**Next:** Kubernetes deployment.
+
+---
+
+# 👨‍💻 Author
+
+**Shivam Kumar Sinha**  
+*DevOps | Cloud Computing | Linux | Networking | Docker | Kubernetes*
+
+🌐 **Connect With Me:**
+- 💼 **LinkedIn:** [Shivam Kumar Sinha](https://www.linkedin.com/in/shivam-kumar-sinha-0a9248308/)
+- 💻 **GitHub:** [Shivam-Infra-Labs](https://github.com/Shivam-Infra-Labs)
+
+---
+# ⭐ Support
+
+If you find this project helpful, please consider giving it a ⭐ **Star** on GitHub!
+

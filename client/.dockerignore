@@ -1,0 +1,8 @@
+node_modules
+dist
+.angular
+.git
+.github
+.vscode
+.env
+*.log

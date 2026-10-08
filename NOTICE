@@ -1,0 +1,9 @@
+# Attribution / Modification Notice
+
+This repository is based on the original MongoDB Developer MEAN Stack Example project.
+
+The original project is licensed under the Apache License, Version 2.0.
+
+This repository contains modifications and additions made for a personal DevOps learning project, including Docker/Docker Compose deployment configuration, NGINX configuration, containerization, deployment documentation, troubleshooting documentation, and related infrastructure work.
+
+The original project's copyright and attribution notices remain applicable to the original portions of the work.
