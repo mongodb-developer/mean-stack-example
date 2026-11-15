@@ -25,7 +25,7 @@ employeeRouter.get("/:id", async (req, res) => {
         } else {
             res.status(404).send(`Failed to find an employee: ID ${id}`);
         }
-    } catch (error) {
+    } catch {
         res.status(404).send(`Failed to find an employee: ID ${req?.params?.id}`);
     }
 });
